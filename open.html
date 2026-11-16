@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>صراوة بلدنا</title>
+<style>
+:root{--bg:#f4f7f5;--card:#fff;--ink:#16221d;--muted:#5b6b64;--brand:#145a45;--line:#dbe4df}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1714;--card:#18231f;--ink:#e9f1ed;--muted:#9bb0a7;--brand:#3fbf94;--line:#2a3a34}}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:var(--bg);color:var(--ink);font-family:"Cairo",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}
+.card{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px 22px;text-align:center}
+.logo{width:64px;height:64px;border-radius:18px;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:30px;margin:0 auto 12px}
+h1{font-size:22px;margin:0 0 6px}
+.what{color:var(--muted);margin:0 0 4px;font-size:15px}
+.name{font-weight:800;font-size:18px;margin:0 0 14px;word-break:break-word}
+#msg{color:var(--muted);font-size:15px;margin:10px 0 16px;line-height:1.7}
+.btn{display:block;width:100%;padding:13px 16px;border-radius:14px;border:0;font:inherit;font-weight:800;font-size:16px;text-decoration:none;cursor:pointer;margin-top:10px}
+.pri{background:var(--brand);color:#fff}
+.sec{background:transparent;color:var(--brand);border:2px solid var(--brand)}
+[hidden]{display:none!important}
+.note{font-size:13px;color:var(--muted);margin-top:14px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo" aria-hidden="true">📍</div>
+  <h1>صراوة بلدنا</h1>
+  <p class="what" id="what"></p>
+  <p class="name" id="name"></p>
+  <p id="msg">جاري فتح التطبيق…</p>
+  <a class="btn pri" id="openBtn" href="#">افتح في التطبيق</a>
+  <a class="btn sec" id="dlBtn" href="#" hidden>تحميل التطبيق</a>
+  <p class="note" id="note" hidden></p>
+</div>
+<script>
+/* ===== الإعدادات: عدّل هذه القيم فقط ===== */
+var API_URL = "https://script.google.com/macros/s/AKfycbz-mavg5xNi1qn7-muddRwojs74NsNJ0ppwh2rOSznCkt7hefbdWdgbwHgUNoBVpmCJ/exec"; // رابط خدمة الدليل (يجلب منه رابط التحميل المحفوظ في الإعدادات)
+var APK_URL = "";                  // احتياطي فقط إن تعذّر جلب الرابط من الإعدادات (الأصل: لوحة التحكم ← إعدادات التطبيق ← روابط التطبيق)
+var PKG     = "com.village.guide"; // اسم حزمة التطبيق (لا تغيّره)
+var SCHEME  = "sarawa";            // بروتوكول الرابط داخل التطبيق (لا تغيّره)
+/* ======================================== */
+
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var q = new URLSearchParams(location.search);
+  var PAGES = ["dir","add","more","settings","fb","upd","init","about","contact","map","notif"];
+  var LBL = {dir:"الدليل",add:"أضف رقم أو نشاط",more:"المزيد",settings:"الإعدادات",fb:"اقتراحات وشكاوى",upd:"التحديثات",init:"عن الدليل",about:"حول التطبيق",contact:"تواصل معنا",map:"الخريطة",notif:"الإشعارات"};
+
+  var path = "", what = "", name = "";
+  var b = (q.get("b") || "").trim(), c = (q.get("c") || "").trim(), p = (q.get("p") || "").trim().toLowerCase();
+  if (b)      { path = "biz/" + encodeURIComponent(b); what = "نشاط في الدليل"; name = b; }
+  else if (c) { path = "cat/" + encodeURIComponent(c); what = "قسم في الدليل"; name = c; }
+  else if (PAGES.indexOf(p) >= 0) { path = p; what = "صفحة في التطبيق"; name = LBL[p]; }
+  else        { path = "dir"; what = "دليل خدمات القرية"; name = ""; }
+
+  $("what").textContent = what;
+  $("name").textContent = name;
+  $("name").hidden = !name;
+
+  var ua = navigator.userAgent || "";
+  var isAndroid = /Android/i.test(ua);
+  var inApp = /FBAN|FBAV|Instagram|Line\/|MicroMessenger|Snapchat/i.test(ua);
+  var notInstalled = q.get("nf") === "1";
+
+  // رابط الفتح المباشر (متصفحات أندرويد تقرأ intent:// وتحوّل لصفحة بديلة إن لم يكن التطبيق مثبتًا)
+  var fq = new URLSearchParams(location.search); fq.set("nf","1");
+  var fallback = location.origin + location.pathname + "?" + fq.toString();
+  var intentUrl = "intent://" + path + "#Intent;scheme=" + SCHEME + ";package=" + PKG +
+                  ";S.browser_fallback_url=" + encodeURIComponent(fallback) + ";end";
+  var schemeUrl = SCHEME + "://" + path;
+
+  var openBtn = $("openBtn"), dlBtn = $("dlBtn"), note = $("note"), msg = $("msg");
+  var apk = APK_URL, wantDl = false, missing = false;
+  if (apk) dlBtn.href = apk;
+
+  function showDownload(){
+    wantDl = true;
+    if (apk) { dlBtn.href = apk; dlBtn.hidden = false; }
+    else { missing = true; note.hidden = false; note.textContent = "رابط تحميل التطبيق غير متاح حاليًا، اطلبه من إدارة الدليل."; }
+  }
+  function setApk(u){
+    apk = u; dlBtn.href = u;
+    if (wantDl) { dlBtn.hidden = false; if (missing) { missing = false; note.hidden = true; } }
+    if (notInstalled) dlBtn.className = "btn pri";
+  }
+  // جلب رابط التحميل المحدَّث من إعدادات قاعدة البيانات
+  (function(){
+    if (!API_URL || !window.fetch) return;
+    var ctl = window.AbortController ? new AbortController() : null;
+    var t = setTimeout(function(){ if (ctl) ctl.abort(); }, 6000);
+    fetch(API_URL + "?only=cfg", ctl ? {signal: ctl.signal} : {})
+      .then(function(r){ return r.json(); })
+      .then(function(d){ clearTimeout(t); var u = d && d.__cfg && String(d.__cfg.apk_url || "").trim(); if (/^https:\/\/\S+$/.test(u)) setApk(u); })
+      .catch(function(){});
+  })();
+
+  if (!isAndroid) {
+    msg.textContent = "التطبيق متاح لهواتف أندرويد. افتح هذا الرابط من هاتفك.";
+    openBtn.hidden = true;
+    showDownload();
+    return;
+  }
+
+  openBtn.href = intentUrl;
+
+  if (notInstalled) {
+    msg.textContent = "يبدو أن التطبيق غير مثبّت على هاتفك. حمّله ثم افتح الرابط مرة أخرى.";
+    openBtn.textContent = "جرّب فتح التطبيق";
+    openBtn.className = "btn sec";
+    showDownload();
+    if (apk) dlBtn.className = "btn pri";
+    return;
+  }
+
+  if (inApp) {
+    note.hidden = false;
+    note.textContent = "إن لم يفتح التطبيق، اضغط على النقاط الثلاث واختر «فتح في المتصفح».";
+  }
+  showDownload();
+  // محاولة فتح تلقائية
+  setTimeout(function(){ location.href = intentUrl; }, 350);
+  // إن بقيت الصفحة ظاهرة بعد ثوانٍ نعرض خيار التحميل
+  setTimeout(function(){ if (!document.hidden) msg.textContent = "إن لم يفتح التطبيق، اضغط «افتح في التطبيق» أو حمّله أولًا."; }, 2500);
+})();
+</script>
+</body>
+</html>
