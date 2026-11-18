@@ -19,15 +19,19 @@ h1{font-size:22px;margin:0 0 6px}
 .pri{background:var(--brand);color:#fff}
 .sec{background:transparent;color:var(--brand);border:2px solid var(--brand)}
 [hidden]{display:none!important}
+.pic{display:block;width:104px;height:104px;border-radius:26px;object-fit:cover;margin:0 auto 12px;border:1px solid var(--line);background:var(--bg)}
+.sub{color:var(--muted);font-size:14px;margin:-8px 0 14px;word-break:break-word}
 .note{font-size:13px;color:var(--muted);margin-top:14px;line-height:1.7}
 </style>
 </head>
 <body>
 <div class="card">
-  <div class="logo" aria-hidden="true">📍</div>
+  <div class="logo" id="logo" aria-hidden="true">📍</div>
+  <img class="pic" id="pic" alt="" hidden>
   <h1>صراوة بلدنا</h1>
   <p class="what" id="what"></p>
   <p class="name" id="name"></p>
+  <p class="sub" id="sub" hidden></p>
   <p id="msg">جاري فتح التطبيق…</p>
   <a class="btn pri" id="openBtn" href="#">افتح في التطبيق</a>
   <a class="btn sec" id="dlBtn" href="#" hidden>تحميل التطبيق</a>
@@ -37,6 +41,7 @@ h1{font-size:22px;margin:0 0 6px}
 /* ===== الإعدادات: عدّل هذه القيم فقط ===== */
 var API_URL = "https://script.google.com/macros/s/AKfycbz-mavg5xNi1qn7-muddRwojs74NsNJ0ppwh2rOSznCkt7hefbdWdgbwHgUNoBVpmCJ/exec"; // رابط خدمة الدليل (يجلب منه رابط التحميل المحفوظ في الإعدادات)
 var APK_URL = "https://drive.google.com/file/d/1IeODnP52Nf892XfCH9ippI9RqKsPUd6d/view?usp=drivesdk";                  // احتياطي فقط إن تعذّر جلب الرابط من الإعدادات (الأصل: لوحة التحكم ← إعدادات التطبيق ← روابط التطبيق)
+var SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbA3E4WP9rCzjVQNkpKao6CZAZux9-ZSSTiDB3-L7Bqu_fV4e7fMWvtKYqxCz-Oof8kZOXIfePhlza/pub?gid=1447951354&single=true&output=csv"; // شيت الأنشطة (لعرض الاسم والصورة)
 var PKG     = "com.village.guide"; // اسم حزمة التطبيق (لا تغيّره)
 var SCHEME  = "sarawa";            // بروتوكول الرابط داخل التطبيق (لا تغيّره)
 /* ======================================== */
@@ -51,10 +56,12 @@ var SCHEME  = "sarawa";            // بروتوكول الرابط داخل ا�
   var b = (q.get("b") || "").trim(), c = (q.get("c") || "").trim(), p = (q.get("p") || "").trim().toLowerCase();
   // الربط بالكود العشوائي (i) أو الرقم (n) أو الاسم (b) — الكود هو الذي يُرسَل عند المشاركة
   var i = (q.get("i") || "").trim().toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 12);
+  var s = (q.get("s") || "").trim().toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 12);
   var n = (q.get("n") || "").trim().replace(/\D/g, "").slice(0, 8);
   if (i)      { path = "id/" + i; what = "جهة في الدليل"; name = ""; }
   else if (n) { path = "num/" + n; what = "جهة في الدليل"; name = ""; }
   else if (b) { path = "biz/" + encodeURIComponent(b); what = "نشاط في الدليل"; name = b; }
+  else if (s) { path = "sec/" + s; what = "قسم في الدليل"; name = ""; }
   else if (c) { path = "cat/" + encodeURIComponent(c); what = "قسم في الدليل"; name = c; }
   else if (PAGES.indexOf(p) >= 0) { path = p; what = "صفحة في التطبيق"; name = LBL[p]; }
   else        { path = "dir"; what = "دليل خدمات القرية"; name = ""; }
@@ -62,6 +69,40 @@ var SCHEME  = "sarawa";            // بروتوكول الرابط داخل ا�
   $("what").textContent = what;
   $("name").textContent = name;
   $("name").hidden = !name;
+
+  /* ===== عرض الاسم والصورة (من شيت الأنشطة) ===== */
+  function norm(h){return String(h==null?"":h).replace(/^\uFEFF/,"").replace(/[٠-٩]/g,function(d){return "٠١٢٣٤٥٦٧٨٩".indexOf(d)}).replace(/[\u064B-\u0652\u0640]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/\s+/g," ").trim().toLowerCase()}
+  function csv(t){var rows=[],r=[],f="",q=false,k=0,ch;for(;k<t.length;k++){ch=t[k];if(q){if(ch==='"'){if(t[k+1]==='"'){f+='"';k++}else q=false}else f+=ch}else if(ch==='"')q=true;else if(ch===","){r.push(f);f=""}else if(ch==="\n"||ch==="\r"){if(ch==="\r"&&t[k+1]==="\n")k++;r.push(f);f="";rows.push(r);r=[]}else f+=ch}if(f!==""||r.length){r.push(f);rows.push(r)}return rows}
+  function pic(u){u=String(u||"").trim().split(/[\s|]+/)[0]||"";if(!u)return"";var m=u.match(/[-\w]{25,}/);return u.indexOf("drive.google.com")>=0&&m?"https://drive.google.com/thumbnail?id="+m[0]+"&sz=w400":u}
+  function show(o){
+    if(o.name){$("name").textContent=o.name;$("name").hidden=false;document.title=o.name+" — صراوة بلدنا"}
+    if(o.sub){$("sub").textContent=o.sub;$("sub").hidden=false}
+    if(o.img){var im=$("pic");im.onload=function(){im.hidden=false;$("logo").hidden=true};im.onerror=function(){im.hidden=true};im.src=o.img}
+  }
+  function secCode(l,c,s,p){var k=[l,c,s,p].map(function(x){return String(x==null?"":x).toLowerCase().replace(/[٠-٩]/g,function(d){return "٠١٢٣٤٥٦٧٨٩".indexOf(d)}).replace(/[\u064B-\u0652\u0640]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/\s+/g," ").trim()}).join("|")+"#srw";var h=2166136261;for(var j=0;j<k.length;j++){h^=k.charCodeAt(j);h=Math.imul(h,16777619)>>>0}h^=h>>>15;h=Math.imul(h,2246822519)>>>0;h^=h>>>13;h=h>>>0;var x=(h%2176782336).toString(36);while(x.length<6)x="0"+x;return x}
+  function fetchT(u,ms){var ctl=window.AbortController?new AbortController():null;var tm=setTimeout(function(){if(ctl)ctl.abort()},ms||8000);return fetch(u,ctl?{signal:ctl.signal}:{}).then(function(r){clearTimeout(tm);return r})}
+  function findEntry(rows){
+    var H=-1,ix={},K={name:["الاسم","اسم النشاط"],cat:["القسم","النوع","التصنيف"],sub:["القسم الفرعي","فرعي","النوع الفرعي"],prof:["المهنة","التخصص","الوظيفة"],img:["الصورة"],imgs:["صور إضافية","صور اضافية","معرض الصور","الصور الإضافية","صور اخرى"],code:["كود الجهة","الكود","كود"],num:["رقم الجهة","الرقم التسلسلي"]};
+    for(var r=0;r<Math.min(rows.length,6)&&H<0;r++){var hs=rows[r].map(norm);if(hs.some(function(x){return K.name.map(norm).indexOf(x)>=0})){H=r;for(var k in K){ix[k]=hs.findIndex(function(x){return K[k].map(norm).indexOf(x)>=0})}}}
+    if(H<0||ix.name<0)return null;
+    var g=function(row,k){return ix[k]>=0?String(row[ix[k]]||"").trim():""};
+    for(var j=H+1;j<rows.length;j++){var w=rows[j];if(!g(w,"name"))continue;
+      var ok=i?(ix.code>=0&&g(w,"code").toLowerCase()===i):n?(ix.num>=0&&g(w,"num").replace(/\D/g,"")===n):norm(g(w,"name"))===norm(b);
+      if(ok)return{name:g(w,"name"),sub:[g(w,"cat"),g(w,"sub"),g(w,"prof")].filter(Boolean).join(" › "),img:pic(g(w,"img")||g(w,"imgs"))}}
+    return null}
+  if ((i||n||b) && SHEET_URL && window.fetch) {
+    fetchT(SHEET_URL+(SHEET_URL.indexOf("?")>=0?"&":"?")+"t="+Date.now()).then(function(r){return r.text()}).then(function(t){var o=findEntry(csv(t));if(o)show(o)}).catch(function(){});
+  }
+  if (s && API_URL && window.fetch) {
+    fetchT(API_URL+"?only=cats",10000).then(function(r){return r.json()}).then(function(d){
+      var rs=d&&d.__cats;if(!Array.isArray(rs))return;var hit=null;
+      rs.forEach(function(r){if(hit||!Array.isArray(r))return;var c=String(r[0]||"").trim();if(!c)return;var sb=String(r[2]||"").trim(),ps=String(r[4]||"").split(/[|،\n]/).map(function(x){return x.trim()}).filter(Boolean),st=String(r[6]||"").trim().toLowerCase();
+        var L=[[1,c,"","",c]];if(sb)L.push([2,c,sb,"",c+" › "+sb]);ps.forEach(function(p){L.push([3,c,sb,p,c+" › "+sb+" › "+p])});
+        var low=ps.length===1?2:(!ps.length&&sb?1:(!ps.length?0:-1));
+        L.forEach(function(x,ix){if(hit)return;var code=(st&&ix===low)?st:"";if(code===s||secCode(x[0],x[1],x[2],x[3])===s)hit=x[4]});});
+      if(hit){$("name").textContent=hit;$("name").hidden=false}
+    }).catch(function(){});
+  }
 
   var ua = navigator.userAgent || "";
   var isAndroid = /Android/i.test(ua);
