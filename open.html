@@ -49,7 +49,12 @@ var SCHEME  = "sarawa";            // بروتوكول الرابط داخل ا�
 
   var path = "", what = "", name = "";
   var b = (q.get("b") || "").trim(), c = (q.get("c") || "").trim(), p = (q.get("p") || "").trim().toLowerCase();
-  if (b)      { path = "biz/" + encodeURIComponent(b); what = "نشاط في الدليل"; name = b; }
+  // الربط بالكود العشوائي (i) أو الرقم (n) أو الاسم (b) — الكود هو الذي يُرسَل عند المشاركة
+  var i = (q.get("i") || "").trim().toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 12);
+  var n = (q.get("n") || "").trim().replace(/\D/g, "").slice(0, 8);
+  if (i)      { path = "id/" + i; what = "جهة في الدليل"; name = ""; }
+  else if (n) { path = "num/" + n; what = "جهة في الدليل"; name = ""; }
+  else if (b) { path = "biz/" + encodeURIComponent(b); what = "نشاط في الدليل"; name = b; }
   else if (c) { path = "cat/" + encodeURIComponent(c); what = "قسم في الدليل"; name = c; }
   else if (PAGES.indexOf(p) >= 0) { path = p; what = "صفحة في التطبيق"; name = LBL[p]; }
   else        { path = "dir"; what = "دليل خدمات القرية"; name = ""; }
