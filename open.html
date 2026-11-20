@@ -96,7 +96,7 @@ var SCHEME  = "sarawa";            // بروتوكول الرابط داخل ا�
   if (s && API_URL && window.fetch) {
     fetchT(API_URL+"?only=cats",10000).then(function(r){return r.json()}).then(function(d){
       var rs=d&&d.__cats;if(!Array.isArray(rs))return;var hit=null;
-      rs.forEach(function(r){if(hit||!Array.isArray(r))return;var c=String(r[0]||"").trim();if(!c)return;var sb=String(r[2]||"").trim(),ps=String(r[4]||"").split(/[|،\n]/).map(function(x){return x.trim()}).filter(Boolean),st=String(r[6]||"").trim().toLowerCase();
+      rs.forEach(function(r){if(hit||!r||typeof r!=="object"||Array.isArray(r))return;var g=function(k){return String(r[k]==null?"":r[k]).trim()};var c=g("القسم");if(!c)return;var sb=g("القسم الفرعي"),ps=g("المهنة").split(/[|،\n]/).map(function(x){return x.trim()}).filter(Boolean),st=g("الكود").toLowerCase();
         var L=[[1,c,"","",c]];if(sb)L.push([2,c,sb,"",c+" › "+sb]);ps.forEach(function(p){L.push([3,c,sb,p,c+" › "+sb+" › "+p])});
         var low=ps.length===1?2:(!ps.length&&sb?1:(!ps.length?0:-1));
         L.forEach(function(x,ix){if(hit)return;var code=(st&&ix===low)?st:"";if(code===s||secCode(x[0],x[1],x[2],x[3])===s)hit=x[4]});});
