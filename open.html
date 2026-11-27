@@ -5,61 +5,36 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>صراوة بلدنا</title>
 <style>
-:root{--bg:#f4f7f5;--card:#fff;--ink:#16221d;--muted:#5b6b64;--brand:#145a45;--line:#dbe4df;--soft:#eaf3ee;--wa:#1faa59;--warn:#9a5b00;--warnbg:#fff4de}
-@media (prefers-color-scheme:dark){:root{--bg:#0f1714;--card:#18231f;--ink:#e9f1ed;--muted:#9bb0a7;--brand:#3fbf94;--line:#2a3a34;--soft:#20322b;--wa:#2fd072;--warn:#f0c36a;--warnbg:#3a2e17}}
+:root{--bg:#f4f7f5;--card:#fff;--ink:#16221d;--muted:#5b6b64;--brand:#145a45;--line:#dbe4df}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1714;--card:#18231f;--ink:#e9f1ed;--muted:#9bb0a7;--brand:#3fbf94;--line:#2a3a34}}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;display:grid;place-items:center;padding:18px;background:var(--bg);color:var(--ink);font-family:"Cairo",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}
-.card{width:100%;max-width:440px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px 18px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.06)}
-.top{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:10px}
-.logo{width:64px;height:64px;border-radius:18px;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:30px}
-.pic{display:block;width:112px;height:112px;border-radius:28px;object-fit:cover;border:1px solid var(--line);background:var(--bg)}
-.brand{font-size:13px;font-weight:800;color:var(--brand);letter-spacing:.2px}
-.what{color:var(--muted);margin:2px 0 2px;font-size:14px}
-.name{font-weight:800;font-size:21px;margin:0 0 6px;word-break:break-word;line-height:1.5}
-.sub{color:var(--muted);font-size:14px;margin:0 0 10px;word-break:break-word}
-.info{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:4px;font-size:14px;color:var(--muted)}
-.phones{display:grid;gap:10px;margin:12px 0 14px;text-align:right}
-.ph{border:1px solid var(--line);background:var(--soft);border-radius:16px;padding:10px 12px}
-.ph-i small{display:block;color:var(--muted);font-size:12px;font-weight:700}
-.ph-i b{display:block;font-size:19px;letter-spacing:.5px;margin:2px 0 8px;direction:ltr;text-align:right}
-.ph-b{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.ph-b:has(.pb:only-child){grid-template-columns:1fr}
-.pb{display:flex;align-items:center;justify-content:center;gap:6px;padding:11px 8px;border-radius:12px;font-weight:800;font-size:15px;text-decoration:none;color:#fff;background:var(--brand)}
-.pb.wa{background:var(--wa)}
-.status{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:14.5px;margin:10px 0 4px;line-height:1.7}
-.status.warn{background:var(--warnbg);color:var(--warn);border-radius:14px;padding:10px 12px;font-weight:700}
-.spin{width:16px;height:16px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--brand);animation:sp .9s linear infinite;flex:0 0 16px}
-.status.warn .spin,.status.done .spin{display:none}
-@keyframes sp{to{transform:rotate(360deg)}}
-.btn{display:block;width:100%;padding:14px 16px;border-radius:14px;border:0;font:inherit;font-weight:800;font-size:16px;text-decoration:none;cursor:pointer;margin-top:10px}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:var(--bg);color:var(--ink);font-family:"Cairo",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}
+.card{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px 22px;text-align:center}
+.logo{width:64px;height:64px;border-radius:18px;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:30px;margin:0 auto 12px}
+h1{font-size:22px;margin:0 0 6px}
+.what{color:var(--muted);margin:0 0 4px;font-size:15px}
+.name{font-weight:800;font-size:18px;margin:0 0 14px;word-break:break-word}
+#msg{color:var(--muted);font-size:15px;margin:10px 0 16px;line-height:1.7}
+.btn{display:block;width:100%;padding:13px 16px;border-radius:14px;border:0;font:inherit;font-weight:800;font-size:16px;text-decoration:none;cursor:pointer;margin-top:10px}
 .pri{background:var(--brand);color:#fff}
 .sec{background:transparent;color:var(--brand);border:2px solid var(--brand)}
-.dlbox{margin-top:16px;border-top:1px dashed var(--line);padding-top:14px;text-align:right}
-.dl-t{font-weight:800;margin:0 0 6px;font-size:15px}
-.steps{margin:0 0 4px;padding-inline-start:20px;color:var(--muted);font-size:13.5px;line-height:1.9}
-.note{font-size:13px;color:var(--muted);margin-top:12px;line-height:1.7}
 [hidden]{display:none!important}
+.pic{display:block;width:104px;height:104px;border-radius:26px;object-fit:cover;margin:0 auto 12px;border:1px solid var(--line);background:var(--bg)}
+.sub{color:var(--muted);font-size:14px;margin:-8px 0 14px;word-break:break-word}
+.note{font-size:13px;color:var(--muted);margin-top:14px;line-height:1.7}
 </style>
 </head>
 <body>
 <div class="card">
-  <div class="top">
-    <div class="logo" id="logo" aria-hidden="true">📍</div>
-    <img class="pic" id="pic" alt="" hidden>
-    <div class="brand">صراوة بلدنا</div>
-  </div>
+  <div class="logo" id="logo" aria-hidden="true">📍</div>
+  <img class="pic" id="pic" alt="" hidden>
+  <h1>صراوة بلدنا</h1>
   <p class="what" id="what"></p>
-  <h1 class="name" id="name"></h1>
+  <p class="name" id="name"></p>
   <p class="sub" id="sub" hidden></p>
-  <ul class="info" id="info" hidden></ul>
-  <div class="phones" id="phones" hidden></div>
-  <div class="status" id="status"><span class="spin"></span><span id="msg">جاري فتح التطبيق…</span></div>
-  <a class="btn pri" id="openBtn" href="#">📲 افتح في التطبيق</a>
-  <div class="dlbox" id="dlBox" hidden>
-    <p class="dl-t">التطبيق غير مثبّت؟</p>
-    <ol class="steps"><li>حمّل التطبيق من الزر بالأسفل.</li><li>ثبّته على هاتفك.</li><li>ارجع لهذا الرابط واضغط «افتح في التطبيق».</li></ol>
-    <a class="btn sec" id="dlBtn" href="#">⬇️ تحميل التطبيق</a>
-  </div>
+  <p id="msg">جاري فتح التطبيق…</p>
+  <a class="btn pri" id="openBtn" href="#">افتح في التطبيق</a>
+  <a class="btn sec" id="dlBtn" href="#" hidden>تحميل التطبيق</a>
   <p class="note" id="note" hidden></p>
 </div>
 <script>
@@ -95,35 +70,36 @@ var SCHEME  = "sarawa";            // بروتوكول الرابط داخل ا�
   $("name").textContent = name;
   $("name").hidden = !name;
 
+  /* تسجيل فتح رابط المشاركة (صامت، لا يؤثر على التحويل) */
+  (function(){
+    if (!API_URL || !window.fetch) return;
+    var k = i || s || n || b || c || p || "dir";
+    var t = (i || n || b) ? "id" : (s || c) ? "sec" : "link";
+    try {
+      fetch(API_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"},
+        body: JSON.stringify({type:"linkopen", k:String(k).slice(0,60), t:t})}).catch(function(){});
+    } catch(e){}
+  })();
+
   /* ===== عرض الاسم والصورة (من شيت الأنشطة) ===== */
   function norm(h){return String(h==null?"":h).replace(/^\uFEFF/,"").replace(/[٠-٩]/g,function(d){return "٠١٢٣٤٥٦٧٨٩".indexOf(d)}).replace(/[\u064B-\u0652\u0640]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/\s+/g," ").trim().toLowerCase()}
   function csv(t){var rows=[],r=[],f="",q=false,k=0,ch;for(;k<t.length;k++){ch=t[k];if(q){if(ch==='"'){if(t[k+1]==='"'){f+='"';k++}else q=false}else f+=ch}else if(ch==='"')q=true;else if(ch===","){r.push(f);f=""}else if(ch==="\n"||ch==="\r"){if(ch==="\r"&&t[k+1]==="\n")k++;r.push(f);f="";rows.push(r);r=[]}else f+=ch}if(f!==""||r.length){r.push(f);rows.push(r)}return rows}
   function pic(u){u=String(u||"").trim().split(/[\s|]+/)[0]||"";if(!u)return"";var m=u.match(/[-\w]{25,}/);return u.indexOf("drive.google.com")>=0&&m?"https://drive.google.com/thumbnail?id="+m[0]+"&sz=w400":u}
-  function esc(t){return String(t==null?"":t).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
-  function fz(p){p=String(p||"").trim();return /^1[0125]\d{8}$/.test(p)?"0"+p:p}
-  function waNum(p){var d=String(p||"").replace(/\D/g,"");return /^01\d{9}$/.test(d)?"2"+d:/^201\d{9}$/.test(d)?d:""}
-  function phoneRow(label,p,nm){var tel=String(p).replace(/[^\d+]/g,""),w=waNum(p),
-    wa=w?"https://wa.me/"+w+"?text="+encodeURIComponent("السلام عليكم، وصلت لنشاطكم ("+nm+") من تطبيق صراوة بلدنا"):"";
-    return '<div class="ph"><div class="ph-i"><small>'+label+'</small><b>'+esc(p)+'</b></div><div class="ph-b"><a class="pb" href="tel:'+esc(tel)+'">📞 اتصال</a>'+(wa?'<a class="pb wa" href="'+esc(wa)+'" target="_blank" rel="noopener">💬 واتساب</a>':'')+'</div></div>'}
   function show(o){
     if(o.name){$("name").textContent=o.name;$("name").hidden=false;document.title=o.name+" — صراوة بلدنا"}
     if(o.sub){$("sub").textContent=o.sub;$("sub").hidden=false}
-    var inf=[];if(o.addr)inf.push("📍 "+o.addr);if(o.hrs)inf.push("🕒 "+o.hrs);
-    if(inf.length){$("info").innerHTML=inf.map(function(t){return "<li>"+esc(t)+"</li>"}).join("");$("info").hidden=false}
-    var rows=[];if(o.ph1)rows.push(phoneRow("الرقم الأول",o.ph1,o.name));if(o.ph2)rows.push(phoneRow("الرقم الثاني",o.ph2,o.name));
-    if(rows.length){$("phones").innerHTML=rows.join("");$("phones").hidden=false}
     if(o.img){var im=$("pic");im.onload=function(){im.hidden=false;$("logo").hidden=true};im.onerror=function(){im.hidden=true};im.src=o.img}
   }
   function secCode(l,c,s,p){var k=[l,c,s,p].map(function(x){return String(x==null?"":x).toLowerCase().replace(/[٠-٩]/g,function(d){return "٠١٢٣٤٥٦٧٨٩".indexOf(d)}).replace(/[\u064B-\u0652\u0640]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/\s+/g," ").trim()}).join("|")+"#srw";var h=2166136261;for(var j=0;j<k.length;j++){h^=k.charCodeAt(j);h=Math.imul(h,16777619)>>>0}h^=h>>>15;h=Math.imul(h,2246822519)>>>0;h^=h>>>13;h=h>>>0;var x=(h%2176782336).toString(36);while(x.length<6)x="0"+x;return x}
   function fetchT(u,ms){var ctl=window.AbortController?new AbortController():null;var tm=setTimeout(function(){if(ctl)ctl.abort()},ms||8000);return fetch(u,ctl?{signal:ctl.signal}:{}).then(function(r){clearTimeout(tm);return r})}
   function findEntry(rows){
-    var H=-1,ix={},K={name:["الاسم","اسم النشاط"],cat:["القسم","النوع","التصنيف"],sub:["القسم الفرعي","فرعي","النوع الفرعي"],prof:["المهنة","التخصص","الوظيفة"],img:["الصورة"],imgs:["صور إضافية","صور اضافية","معرض الصور","الصور الإضافية","صور اخرى"],code:["كود الجهة","الكود","كود"],num:["رقم الجهة","الرقم التسلسلي"],ph1:["الهاتف 1","الهاتف","رقم الهاتف","التليفون","الموبايل","هاتف 1","رقم 1","الهاتف1"],ph2:["الهاتف 2","رقم آخر","رقم اضافي","هاتف آخر","رقم 2","رقم ثاني","هاتف 2","الهاتف2"],addr:["العنوان"],hrs:["مواعيد العمل","المواعيد","موعد العمل","ساعات العمل"]};
+    var H=-1,ix={},K={name:["الاسم","اسم النشاط"],cat:["القسم","النوع","التصنيف"],sub:["القسم الفرعي","فرعي","النوع الفرعي"],prof:["المهنة","التخصص","الوظيفة"],img:["الصورة"],imgs:["صور إضافية","صور اضافية","معرض الصور","الصور الإضافية","صور اخرى"],code:["كود الجهة","الكود","كود"],num:["رقم الجهة","الرقم التسلسلي"]};
     for(var r=0;r<Math.min(rows.length,6)&&H<0;r++){var hs=rows[r].map(norm);if(hs.some(function(x){return K.name.map(norm).indexOf(x)>=0})){H=r;for(var k in K){ix[k]=hs.findIndex(function(x){return K[k].map(norm).indexOf(x)>=0})}}}
     if(H<0||ix.name<0)return null;
     var g=function(row,k){return ix[k]>=0?String(row[ix[k]]||"").trim():""};
     for(var j=H+1;j<rows.length;j++){var w=rows[j];if(!g(w,"name"))continue;
       var ok=i?(ix.code>=0&&g(w,"code").toLowerCase()===i):n?(ix.num>=0&&g(w,"num").replace(/\D/g,"")===n):norm(g(w,"name"))===norm(b);
-      if(ok)return{name:g(w,"name"),sub:[g(w,"cat"),g(w,"sub"),g(w,"prof")].filter(Boolean).join(" › "),img:pic(g(w,"img")||g(w,"imgs")),ph1:fz(g(w,"ph1")),ph2:fz(g(w,"ph2")),addr:g(w,"addr"),hrs:g(w,"hrs")}}
+      if(ok)return{name:g(w,"name"),sub:[g(w,"cat"),g(w,"sub"),g(w,"prof")].filter(Boolean).join(" › "),img:pic(g(w,"img")||g(w,"imgs"))}}
     return null}
   if ((i||n||b) && SHEET_URL && window.fetch) {
     fetchT(SHEET_URL+(SHEET_URL.indexOf("?")>=0?"&":"?")+"t="+Date.now()).then(function(r){return r.text()}).then(function(t){var o=findEntry(csv(t));if(o)show(o)}).catch(function(){});
@@ -155,16 +131,15 @@ var SCHEME  = "sarawa";            // بروتوكول الرابط داخل ا�
   var apk = APK_URL, wantDl = false, missing = false;
   if (apk) dlBtn.href = apk;
 
-  var statusEl = $("status"), dlBox = $("dlBox");
-  function setStatus(kind, text){ statusEl.className = "status " + kind; msg.textContent = text; }
   function showDownload(){
-    wantDl = true; dlBox.hidden = false;
+    wantDl = true;
     if (apk) { dlBtn.href = apk; dlBtn.hidden = false; }
-    else { missing = true; dlBtn.hidden = true; note.hidden = false; note.textContent = "رابط تحميل التطبيق غير متاح حاليًا، اطلبه من إدارة الدليل."; }
+    else { missing = true; note.hidden = false; note.textContent = "رابط تحميل التطبيق غير متاح حاليًا، اطلبه من إدارة الدليل."; }
   }
   function setApk(u){
     apk = u; dlBtn.href = u;
     if (wantDl) { dlBtn.hidden = false; if (missing) { missing = false; note.hidden = true; } }
+    if (notInstalled) dlBtn.className = "btn pri";
   }
   // جلب رابط التحميل المحدَّث من إعدادات قاعدة البيانات
   (function(){
@@ -178,7 +153,7 @@ var SCHEME  = "sarawa";            // بروتوكول الرابط داخل ا�
   })();
 
   if (!isAndroid) {
-    setStatus("warn", "التطبيق متاح لهواتف أندرويد. افتح هذا الرابط من هاتفك.");
+    msg.textContent = "التطبيق متاح لهواتف أندرويد. افتح هذا الرابط من هاتفك.";
     openBtn.hidden = true;
     showDownload();
     return;
@@ -187,11 +162,11 @@ var SCHEME  = "sarawa";            // بروتوكول الرابط داخل ا�
   openBtn.href = intentUrl;
 
   if (notInstalled) {
-    setStatus("warn", "يبدو أن التطبيق غير مثبّت على هاتفك.");
-    openBtn.textContent = "📲 جرّب فتح التطبيق";
+    msg.textContent = "يبدو أن التطبيق غير مثبّت على هاتفك. حمّله ثم افتح الرابط مرة أخرى.";
+    openBtn.textContent = "جرّب فتح التطبيق";
     openBtn.className = "btn sec";
     showDownload();
-    dlBtn.className = "btn pri";
+    if (apk) dlBtn.className = "btn pri";
     return;
   }
 
@@ -203,7 +178,7 @@ var SCHEME  = "sarawa";            // بروتوكول الرابط داخل ا�
   // محاولة فتح تلقائية
   setTimeout(function(){ location.href = intentUrl; }, 350);
   // إن بقيت الصفحة ظاهرة بعد ثوانٍ نعرض خيار التحميل
-  setTimeout(function(){ if (!document.hidden) setStatus("done", "إن لم يفتح التطبيق، اضغط «افتح في التطبيق» أو حمّله من الأسفل."); }, 2500);
+  setTimeout(function(){ if (!document.hidden) msg.textContent = "إن لم يفتح التطبيق، اضغط «افتح في التطبيق» أو حمّله أولًا."; }, 2500);
 })();
 </script>
 </body>
